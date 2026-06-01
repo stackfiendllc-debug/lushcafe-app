@@ -1,96 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Lush Cafe Admin</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      padding: 20px;
-    }
-
-    input, button {
-      width: 100%;
-      max-width: 400px;
-      padding: 12px;
-      margin: 10px 0;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .card {
-      background: #222;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-    }
-  </style>
+  <title>Lush Test</title>
 </head>
-<body>
+<body style="background:black;color:white;padding:20px;">
 
-<h1>Lush Cafe Admin</h1>
+<h1>Lush Login Test</h1>
 
-<div id="loginSection">
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button id="loginBtn">Login</button>
-</div>
+<input id="email" placeholder="Email"><br><br>
+<input id="password" type="password" placeholder="Password"><br><br>
 
-<div id="dashboard" class="hidden">
-  <div class="card">
-    <h2>Dashboard</h2>
-    <button id="loadMenu">Load Menu</button>
-    <button id="loadEvents">Load Events</button>
-    <button id="logoutBtn">Logout</button>
-  </div>
+<button id="loginBtn">LOGIN</button>
 
-  <pre id="output"></pre>
-</div>
-
-<script type="module">
-  import { login, logout } from "./src/js/auth.js";
-  import { getMenuItems } from "./src/js/menu.js";
-  import { getEvents } from "./src/js/events.js";
-
-  const loginSection = document.getElementById("loginSection");
-  const dashboard = document.getElementById("dashboard");
-  const output = document.getElementById("output");
-
-  document.getElementById("loginBtn").addEventListener("click", async () => {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    try {
-      await login(email, password);
-
-      alert("Login successful");
-
-      loginSection.classList.add("hidden");
-      dashboard.classList.remove("hidden");
-
-    } catch (error) {
-      alert(error.message);
-      console.error(error);
-    }
-  });
-
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await logout();
-    dashboard.classList.add("hidden");
-    loginSection.classList.remove("hidden");
-  });
-
-  document.getElementById("loadMenu").addEventListener("click", async () => {
-    output.textContent = JSON.stringify(await getMenuItems(), null, 2);
-  });
-
-  document.getElementById("loadEvents").addEventListener("click", async () => {
-    output.textContent = JSON.stringify(await getEvents(), null, 2);
-  });
+<script>
+document.getElementById("loginBtn").addEventListener("click", function () {
+  alert("Button works");
+});
 </script>
 
 </body>
