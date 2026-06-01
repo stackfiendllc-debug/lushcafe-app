@@ -5,8 +5,14 @@ export async function getMenuItems() {
     .from("menu_items")
     .select("*");
 
-  if (error) throw error;
-  return data;
+  if (error) {
+    console.error(error);
+    throw error;
+  }
+
+  console.log("MENU DATA:", data);
+
+  return data || [];
 }
 
 export async function createMenuItem(item) {
@@ -15,15 +21,6 @@ export async function createMenuItem(item) {
     .insert([item]);
 
   if (error) throw error;
-  return data;
-}
 
-export async function updateMenuItem(id, updates) {
-  const { data, error } = await supabase
-    .from("menu_items")
-    .update(updates)
-    .eq("id", id);
-
-  if (error) throw error;
   return data;
 }
