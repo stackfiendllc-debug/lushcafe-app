@@ -1,26 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Lush Cafe Admin</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #111;
+      color: white;
+      padding: 20px;
+    }
+
+    input, button {
+      padding: 12px;
+      margin: 8px 0;
+      width: 100%;
+      max-width: 400px;
+      display: block;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .card {
+      background: #222;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Lush Cafe Admin</h1>
-  <button id="testBtn">Test Backend</button>
 
-  <script type="module">
-    import { getMenuItems } from "./src/js/menu.js";
+<h1>Lush Cafe Admin</h1>
 
-    document.getElementById("testBtn").addEventListener("click", async () => {
-      try {
-        const items = await getMenuItems();
-        console.log("Connected:", items);
-        alert("Supabase connected");
-      } catch (err) {
-        console.error(err);
-        alert("Connection failed");
-      }
-    });
-  </script>
+<div id="loginSection">
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button id="loginBtn">Login</button>
+</div>
+
+<div id="dashboard" class="hidden">
+  <div class="card">
+    <h2>Dashboard</h2>
+    <button id="loadMenu">Load Menu</button>
+    <button id="loadEvents">Load Events</button>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <pre id="output"></pre>
+</div>
+
+<script type="module">
+  import { login, logout } from "./src/js/auth.js";
+  import { getMenuItems } from "./src/js/menu.js";
+  import { getEvents } from "./src/js/events.js";
+
+  const loginSection = document.getElementById("loginSection");
+  const dashboard = document.getElementById("dashboard");
+  const output = document.getElementById("output");
+
+  document.getElementById("loginBtn").onclick = async () => {
+    try {
+      await login(
+        document.getElementById("email").value,
+        document.getElementById("password").value
+      );
+
+      loginSection.classList.add("hidden");
+      dashboard.classList.remove("hidden");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  document.getElementById("logoutBtn").onclick = async () => {
+    await logout();
+    dashboard.classList.add("hidden");
+    loginSection.classList.remove("hidden");
+  };
+
+  document.getElementById("loadMenu").onclick = async () => {
+    output.textContent = JSON.stringify(await getMenuItems(), null, 2);
+  };
+
+  document.getElementById("loadEvents").onclick = async () => {
+    output.textContent = JSON.stringify(await getEvents(), null, 2);
+  };
+</script>
+
 </body>
 </html>
