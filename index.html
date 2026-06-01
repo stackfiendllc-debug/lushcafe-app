@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lush Cafe Admin</title>
+</head>
+<body>
+  <h1>Lush Cafe Admin</h1>
+  <button id="testBtn">Test Backend</button>
+
+  <script type="module">
+    import { getMenuItems } from "./src/js/menu.js";
+
+    document.getElementById("testBtn").addEventListener("click", async () => {
+      try {
+        const items = await getMenuItems();
+        console.log("Connected:", items);
+        alert("Supabase connected");
+      } catch (err) {
+        console.error(err);
+        alert("Connection failed");
+      }
+    });
+  </script>
+</body>
+</html>
