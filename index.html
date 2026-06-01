@@ -1,32 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Lush Auth Test</title>
+  <meta charset="UTF-8">
+  <title>Lush Cafe Admin</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #000;
+      color: white;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+    }
+
+    button {
+      background: #b30000;
+      color: white;
+      cursor: pointer;
+    }
+
+    #dashboard {
+      display: none;
+    }
+
+    .card {
+      background: #111;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
-<body style="background:black;color:white;padding:20px;">
+<body>
 
-<h1>Supabase Auth Test</h1>
+<div class="container" id="loginScreen">
+  <h1>Lush Cafe Admin</h1>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button id="loginBtn">Login</button>
+</div>
 
-<input id="email" placeholder="Email"><br><br>
-<input id="password" type="password" placeholder="Password"><br><br>
+<div class="container" id="dashboard">
+  <h1>Dashboard</h1>
 
-<button id="loginBtn">LOGIN</button>
+  <div class="card">
+    Menu Management
+  </div>
+
+  <div class="card">
+    Weekly Events
+  </div>
+
+  <div class="card">
+    Reservations
+  </div>
+
+  <button id="logoutBtn">Logout</button>
+</div>
 
 <script type="module">
-import { login } from "./src/js/auth.js";
+import { login, logout } from "./src/js/auth.js";
 
-document.getElementById("loginBtn").addEventListener("click", async () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
+loginBtn.addEventListener("click", async () => {
   try {
-    const result = await login(email, password);
-    console.log(result);
-    alert("LOGIN SUCCESS");
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    await login(email, password);
+
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+
   } catch (error) {
-    console.error(error);
-    alert("ERROR: " + error.message);
+    alert(error.message);
   }
+});
+
+logoutBtn.addEventListener("click", async () => {
+  await logout();
+  location.reload();
 });
 </script>
 
