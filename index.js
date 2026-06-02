@@ -1,36 +1,17 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { supabase } from "./supabase.js";
 
-// Correct Supabase Project
-const supabaseUrl = "https://thmgouvftmknpdhnfzpo.supabase.co";
-
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWdvdXZmdG1rbnBkaG5menBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMzc1NDksImV4cCI6MjA5NTkxMzU0OX0.DVb-2s5hRPeHsXRF5OC9ypl93CkFhnvSJd-Yx-HSVyQ";
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-// DOM Elements
-const loginScreen = document.getElementById("loginScreen");
-const dashboard = document.getElementById("dashboard");
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
+const bookBtn = document.getElementById("bookBtn");
+
+const loginScreen = document.getElementById("loginScreen");
+const dashboard = document.getElementById("dashboard");
+
 const menuContainer = document.getElementById("menuContainer");
 const eventsContainer = document.getElementById("eventsContainer");
+const reservationContainer = document.getElementById("reservationContainer");
 
-// Show Dashboard
-async function showDashboard() {
-  loginScreen.classList.add("hidden");
-  dashboard.classList.remove("hidden");
-
-  await loadMenu();
-  await loadEvents();
-}
-
-// Show Login
-function showLogin() {
-  dashboard.classList.add("hidden");
-  loginScreen.classList.remove("hidden");
-}
-
-// Login
+// LOGIN
 loginBtn.addEventListener("click", async () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -45,66 +26,99 @@ loginBtn.addEventListener("click", async () => {
     return;
   }
 
-  alert("Login successful");
-  await showDashboard();
+  showDashboard();
 });
 
-// Logout
+// LOGOUT
 logoutBtn.addEventListener("click", async () => {
   await supabase.auth.signOut();
-  showLogin();
+  dashboard.classList.add("hidden");
+  loginScreen.classList.remove("hidden");
 });
 
-// Check existing session
-async function checkSession() {
-  const { data } = await supabase.auth.getSession();
+// SHOW DASHBOARD
+async function showDashboard() {
+  loginScreen.classList.add("hidden");
+  dashboard.classList.remove("hidden");
 
-  if (data.session) {
-    await showDashboard();
-  } else {
-    showLogin();
-  }
+  await loadMenu();
+  await loadEvents();
+  await loadReservations();
 }
 
-// Load Menu
+// LOAD MENU
 async function loadMenu() {
-  const { data, error } = await supabase
-    .from("menu_items")
-    .select("*");
-
-  if (error || !data.length) {
-    menuContainer.innerHTML = "<p>No menu items found</p>";
-    return;
-  }
+  const { data } = await supabase.from("menu").select("*");
 
   menuContainer.innerHTML = data.map(item => `
     <div class="card">
       <h4>${item.name}</h4>
-      <p>${item.description}</p>
-      <strong>$${item.price}</strong>
+      <p>${item.price}</p>
     </div>
   `).join("");
 }
 
-// Load Events
+// LOAD EVENTS
 async function loadEvents() {
-  const { data, error } = await supabase
-    .from("events")
-    .select("*");
-
-  if (error || !data.length) {
-    eventsContainer.innerHTML = "<p>No events found</p>";
-    return;
-  }
+  const { data } = await supabase.from("events").select("*");
 
   eventsContainer.innerHTML = data.map(event => `
     <div class="card">
       <h4>${event.title}</h4>
       <p>${event.description}</p>
-      <strong>${event.event_date}</strong>
     </div>
   `).join("");
 }
 
-// Start app
-checkSession();
+// BOOK RESERVATION
+bookBtn.addEventListener("click", async () => {
+  const { error } = await supabase
+    .from("reservations")
+    .insert([
+      {
+        guest_name: document.getElementById("customerName").value,
+        phone: document.getElementById("customerPhone").value,
+        email: document.getElementById("customerEmail").value,
+        reservation_date: document.getElementById("reservationDate").value,
+        reservation_time: document.getElementById("reservationTime").value,
+        party_size: parseInt(document.getElementById("partySize").value),
+        special_requests: document.getElementById("specialRequest").value,
+        status: "pending"
+      }
+    ]);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Reservation booked successfully");
+  loadReservations();
+});
+
+// LOAD RESERVATIONS
+async function loadReservations() {
+  const { data } = await supabase
+    .from("reservations")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  reservationContainer.innerHTML = data.map(r => `
+    <div class="card">
+      <h4>${r.guest_name}</h4>
+      <p>${r.phone}</p>
+      <p>${r.email}</p>
+      <p>${r.reservation_date} at ${r.reservation_time}</p>
+      <p>Party of ${r.party_size}</p>
+      <p>${r.special_requests || "No special requests"}</p>
+      <p>Status: ${r.status}</p>
+    </div>
+  `).join("");
+}
+
+// SESSION CHECK
+supabase.auth.getSession().then(({ data }) => {
+  if (data.session) {
+    showDashboard();
+  }
+});
