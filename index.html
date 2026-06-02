@@ -4,69 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lush Cafe App</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
-
-    input, button {
-      display: block;
-      width: 90%;
-      max-width: 400px;
-      margin: 10px auto;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-    }
-
-    button {
-      background: #2ecc71;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .card {
-      background: #222;
-      padding: 15px;
-      margin: 15px auto;
-      border-radius: 10px;
-      max-width: 500px;
-      text-align: left;
-    }
-
-    h1, h2, h3 {
-      color: #2ecc71;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
+  <!-- Login Screen -->
   <div id="loginScreen">
     <h1>Lush Cafe App</h1>
 
     <input type="email" id="email" placeholder="Email" />
     <input type="password" id="password" placeholder="Password" />
 
-    <button id="loginBtn">Sign In</button>
+    <button id="loginBtn">Login</button>
   </div>
 
-  <!-- DASHBOARD -->
+  <!-- Dashboard -->
   <div id="dashboard" class="hidden">
     <h2>Lush Cafe Dashboard</h2>
 
@@ -77,6 +29,19 @@
 
     <h3>Upcoming Events</h3>
     <div id="eventsContainer"></div>
+
+    <h3>Book a Table</h3>
+    <div id="reservationContainer"></div>
+
+    <input type="text" id="customerName" placeholder="Guest Name" />
+    <input type="tel" id="customerPhone" placeholder="Phone Number" />
+    <input type="email" id="customerEmail" placeholder="Email" />
+    <input type="date" id="reservationDate" />
+    <input type="time" id="reservationTime" />
+    <input type="number" id="partySize" placeholder="Party Size" />
+    <input type="text" id="specialRequest" placeholder="Special Requests" />
+
+    <button id="bookBtn">Book Table</button>
   </div>
 
   <script type="module" src="index.js"></script>
