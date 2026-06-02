@@ -20,6 +20,7 @@
 
   <!-- Dashboard -->
   <div id="dashboard" class="hidden">
+
     <h2>Lush Cafe Dashboard</h2>
 
     <button id="logoutBtn">Sign Out</button>
@@ -30,20 +31,23 @@
     <h3>Upcoming Events</h3>
     <div id="eventsContainer"></div>
 
-    <h3>Book a Table</h3>
-    <div id="reservationContainer"></div>
+    <h3>Book a Reservation</h3>
 
-    <input type="text" id="customerName" placeholder="Guest Name" />
-    <input type="tel" id="customerPhone" placeholder="Phone Number" />
-    <input type="email" id="customerEmail" placeholder="Email" />
-    <input type="date" id="reservationDate" />
-    <input type="time" id="reservationTime" />
-    <input type="number" id="partySize" placeholder="Party Size" />
-    <input type="text" id="specialRequest" placeholder="Special Requests" />
+    <form id="reservationForm">
+      <input id="guestName" placeholder="Full Name" required />
+      <input id="phone" placeholder="Phone Number" required />
+      <input id="reservationEmail" type="email" placeholder="Email" required />
+      <input id="partySize" type="number" placeholder="Party Size" required />
+      <input id="reservationDate" type="date" required />
+      <input id="reservationTime" type="time" required />
+      <textarea id="specialRequests" placeholder="Special Requests"></textarea>
 
-    <button id="bookBtn">Book Table</button>
+      <button type="submit">Reserve Table</button>
+    </form>
+
   </div>
 
   <script type="module" src="index.js"></script>
+
 </body>
 </html>
