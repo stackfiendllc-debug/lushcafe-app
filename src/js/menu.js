@@ -1,26 +1,27 @@
 import { supabase } from "./supabase.js";
 
-export async function getMenuItems() {
+export async function loadMenu() {
   const { data, error } = await supabase
     .from("menu_items")
     .select("*");
 
+  const container = document.getElementById("menuContainer");
+
   if (error) {
-    console.error(error);
-    throw error;
+    container.innerHTML = "Failed loading menu";
+    return;
   }
 
-  console.log("MENU DATA:", data);
+  if (!data.length) {
+    container.innerHTML = "No menu items found";
+    return;
+  }
 
-  return data || [];
-}
-
-export async function createMenuItem(item) {
-  const { data, error } = await supabase
-    .from("menu_items")
-    .insert([item]);
-
-  if (error) throw error;
-
-  return data;
+  container.innerHTML = data.map(item => `
+    <div>
+      <h4>${item.name}</h4>
+      <p>${item.description}</p>
+      <p>$${item.price}</p>
+    </div>
+  `).join("");
 }
