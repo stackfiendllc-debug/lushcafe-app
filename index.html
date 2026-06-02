@@ -1,164 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lush Cafe App</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      margin: 0;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: auto;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      box-sizing: border-box;
-    }
-
-    button {
-      background: #c62828;
-      color: white;
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .menu-item {
-      background: #222;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 8px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="container">
-
-  <!-- LOGIN -->
-  <div id="loginPage">
+  <!-- Login Screen -->
+  <div id="loginScreen">
     <h1>Lush Cafe App</h1>
 
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
 
     <button id="loginBtn">Login</button>
-    <p id="loginStatus"></p>
   </div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboardPage" class="hidden">
-    <h1>Lush Dashboard</h1>
+  <!-- Dashboard -->
+  <div id="dashboard" class="hidden">
+    <h2>Lush Cafe Dashboard</h2>
 
-    <button id="logoutBtn">Logout</button>
+    <button id="logoutBtn">Sign Out</button>
 
-    <h2>Live Menu</h2>
-    <div id="menuList"></div>
+    <h3>Live Menu</h3>
+    <div id="menuContainer"></div>
+
+    <h3>Upcoming Events</h3>
+    <div id="eventsContainer"></div>
   </div>
 
-</div>
-
-<script type="module">
-import { supabase } from "./src/js/supabase.js";
-
-function showDashboard() {
-  document.getElementById("loginPage").classList.add("hidden");
-  document.getElementById("dashboardPage").classList.remove("hidden");
-}
-
-function showLogin() {
-  document.getElementById("dashboardPage").classList.add("hidden");
-  document.getElementById("loginPage").classList.remove("hidden");
-}
-
-async function checkSession() {
-  const { data } = await supabase.auth.getSession();
-
-  if (data.session) {
-    showDashboard();
-    loadMenu();
-  } else {
-    showLogin();
-  }
-}
-
-async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (error) {
-    document.getElementById("loginStatus").innerText = error.message;
-    return;
-  }
-
-  document.getElementById("loginStatus").innerText = "Login success";
-
-  showDashboard();
-  loadMenu();
-}
-
-async function logout() {
-  await supabase.auth.signOut();
-
-  showLogin();
-
-  document.getElementById("email").value = "";
-  document.getElementById("password").value = "";
-  document.getElementById("loginStatus").innerText = "Logged out";
-}
-
-async function loadMenu() {
-  const { data, error } = await supabase
-    .from("menu_items")
-    .select("*");
-
-  if (error) {
-    console.error(error);
-    document.getElementById("menuList").innerHTML =
-      "<p>Error loading menu</p>";
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    document.getElementById("menuList").innerHTML =
-      "<p>No menu items found.</p>";
-    return;
-  }
-
-  document.getElementById("menuList").innerHTML = data.map(item => `
-    <div class="menu-item">
-      <strong>${item.name}</strong><br>
-      ${item.description || ""}<br>
-      $${item.price}
-    </div>
-  `).join("");
-}
-
-document.getElementById("loginBtn").addEventListener("click", login);
-document.getElementById("logoutBtn").addEventListener("click", logout);
-
-checkSession();
-</script>
-
+  <script type="module" src="index.js"></script>
 </body>
 </html>
