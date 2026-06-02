@@ -1,19 +1,41 @@
-import { supabase } from "./supabase.js";
+import { login, logout, checkSession } from "./auth.js";
+import { loadMenu } from "./menu.js";
+import { loadEvents } from "./event.js";
 
-export async function getWeeklyUpdates() {
-  const { data, error } = await supabase
-    .from("weekly_updates")
-    .select("*");
+const loginScreen = document.getElementById("loginScreen");
+const dashboard = document.getElementById("dashboard");
 
-  if (error) throw error;
-  return data;
+async function showDashboard() {
+  loginScreen.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+
+  await loadMenu();
+  await loadEvents();
 }
 
-export async function createUpdate(update) {
-  const { data, error } = await supabase
-    .from("weekly_updates")
-    .insert([update]);
+function showLogin() {
+  dashboard.classList.add("hidden");
+  loginScreen.classList.remove("hidden");
+}
 
-  if (error) throw error;
-  return data;
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const success = await login(email, password);
+
+  if (success) {
+    showDashboard();
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await logout();
+  showLogin();
+});
+
+if (await checkSession()) {
+  showDashboard();
+} else {
+  showLogin();
 }
